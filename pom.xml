@@ -8,6 +8,10 @@
   <name>EnergyMon Parent</name>
   <description>EnergyMon over JNI</description>
 
+  <properties>
+    <energymon.wrapper.max_count>64</energymon.wrapper.max_count>
+  </properties>
+
   <modules>
     <module>native</module>
     <module>energymon</module>

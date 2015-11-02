@@ -12,8 +12,7 @@ import org.junit.Test;
  * @author Connor Imes
  */
 public class DefaultEnergyMonJNITest {
-	// TODO: This should be discovered dynamically
-	private static final int MAX_ARRAY_SIZE = 64;
+	private static final String ENERGYMON_MAX_COUNT_PROPERTY = "energymonWrapperMaxCount";
 
 	@Test
 	public void test_normal() {
@@ -98,8 +97,9 @@ public class DefaultEnergyMonJNITest {
 
 	@Test(expected = IllegalStateException.class)
 	public void test_fill_native_array() {
-		EnergyMon[] ems = new EnergyMon[MAX_ARRAY_SIZE];
-		for (int i = 0; i < MAX_ARRAY_SIZE; i++) {
+		final int maxEnergyMonCount = Integer.getInteger(ENERGYMON_MAX_COUNT_PROPERTY);
+		EnergyMon[] ems = new EnergyMon[maxEnergyMonCount];
+		for (int i = 0; i < ems.length; i++) {
 			try {
 				ems[i] = new DefaultEnergyMonJNI();
 			} catch (Exception e) {
@@ -111,7 +111,7 @@ public class DefaultEnergyMonJNITest {
 		try {
 			new DefaultEnergyMonJNI();
 		} finally {
-			for (int i = 0; i < MAX_ARRAY_SIZE; i++) {
+			for (int i = 0; i < ems.length; i++) {
 				try {
 					ems[i].finish();
 					ems[i] = null;

@@ -29,7 +29,10 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <forkMode>once</forkMode>
-          <argLine>-Djava.library.path=../native/native-linux/target</argLine>
+          <argLine>-Djava.library.path=${basedir}/../native/native-linux/target</argLine>
+          <systemPropertyVariables>
+            <energymonWrapperMaxCount>${energymon.wrapper.max_count}</energymonWrapperMaxCount>
+          </systemPropertyVariables>
         </configuration>
       </plugin>
     </plugins>

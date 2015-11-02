@@ -38,7 +38,10 @@
             </source>
           </sources>
           <compilerStartOptions>
-            <compilerStartOption>-fPIC -Wall -Wno-unknown-pragmas</compilerStartOption>
+            <compilerStartOption>-fPIC</compilerStartOption>
+            <compilerStartOption>-Wall</compilerStartOption>
+            <compilerStartOption>-Wno-unknown-pragmas</compilerStartOption>
+            <compilerStartOption>-DENERGYMON_WRAPPER_MAX_COUNT=${energymon.wrapper.max_count}</compilerStartOption>
           </compilerStartOptions>
           <linkerStartOptions>
             <linkerStartOption>-shared</linkerStartOption>

@@ -7,10 +7,16 @@
   <packaging>pom</packaging>
   <name>EnergyMon Parent</name>
   <description>EnergyMon over JNI</description>
+  <url>https://github.com/energymon/energymon-java</url>
+  <inceptionYear>2015</inceptionYear>
 
-  <properties>
-    <energymon.wrapper.max_count>64</energymon.wrapper.max_count>
-  </properties>
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>http://www.opensource.org/licenses/mit-license.php</url>
+      <distribution>manual</distribution>
+    </license>
+  </licenses>
 
   <modules>
     <module>native</module>
@@ -18,6 +24,21 @@
     <module>test</module>
     <module>example</module>
   </modules>
+
+  <scm>
+    <url>https://github.com/energymon/energymon-java</url>
+    <connection>scm:git:git://github.com/energymon/energymon-java.git</connection>
+    <developerConnection>scm:git:git@github.com/energymon/energymon-java.git</developerConnection>
+  </scm>
+
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/energymon/energymon-java/issues</url>
+  </issueManagement>
+
+  <properties>
+    <energymon.wrapper.max_count>64</energymon.wrapper.max_count>
+  </properties>
 
   <dependencyManagement>
     <dependencies>
@@ -67,4 +88,5 @@
       </plugins>
     </pluginManagement>
   </build>
+
 </project>

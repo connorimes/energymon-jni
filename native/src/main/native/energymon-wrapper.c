@@ -2,14 +2,12 @@
  * Native JNI bindings for energymon-default.
  * These functions act as wrappers since we cannot represent an energymon struct in Java.
  * Up to ENERGYMON_WRAPPER_MAX_COUNT energymon instances may exist at any given time.
- * This implementation is NOT thread safe.
+ * This implementation does NOT enforce safety w.r.t. the energymon protocol.
  *
  * @author Connor Imes
  * @date 2015-11-01
  */
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <jni.h>
 // native lib headers
 #include <energymon/energymon.h>
@@ -44,72 +42,110 @@ static inline jbyteArray llu_to_jbyteArray(JNIEnv* env, unsigned long long *val)
 }
 
 /**
- * Return an int representing an energymon.
+ * Return an identifier representing an energymon.
  */
 JNIEXPORT jint JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonGetDefault(JNIEnv* env, jobject obj) {
-  // TODO: This is not at all thread safe!
+  energymon* em = malloc(sizeof(energymon));
+  if (em == NULL) {
+    return -1;
+  }
+  if (energymon_get_default(em)) {
+    // shouldn't happen in any known implementations
+    free(em);
+    return -1;
+  }
+  // look for an empty slot in the array
   unsigned int i;
   for (i = 0; i < ENERGYMON_WRAPPER_MAX_COUNT; i++) {
-    if (ems[i] == NULL) {
+    // atomic management of the array
+    if (__sync_bool_compare_and_swap(&ems[i], NULL, em)) {
       break;
     }
   }
   if (i == ENERGYMON_WRAPPER_MAX_COUNT) {
     // no open slots in the array
+    free(em);
     return -1;
   }
-  energymon* em = malloc(sizeof(energymon));
-  if (em == NULL) {
-  	return -1;
-  }
-  if (energymon_get_default(em)) {
-  	free(em);
-  	return -1;
-  }
-  ems[i] = em;
   return i;
 }
 
+/**
+ * Initialize the energymon for the provided identifier.
+ */
 JNIEXPORT jint JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonInit(JNIEnv* env, jobject obj, jint id) {
-  if (id < 0 || id >= ENERGYMON_WRAPPER_MAX_COUNT || ems[id] == NULL) {
+  if (id < 0 || id >= ENERGYMON_WRAPPER_MAX_COUNT) {
     return -1;
   }
-  return ems[id]->finit(ems[id]);
+  energymon* em = ems[id];
+  if (em == NULL) {
+    return -1;
+  }
+  return em->finit(em);
 }
 
+/**
+ * Read from the energymon for the provided identifier.
+ */
 JNIEXPORT jbyteArray JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonReadTotal(JNIEnv* env, jobject obj, jint id) {
-  if (id < 0 || id >= ENERGYMON_WRAPPER_MAX_COUNT || ems[id] == NULL) {
+  if (id < 0 || id >= ENERGYMON_WRAPPER_MAX_COUNT) {
     return NULL;
   }
-  unsigned long long data = ems[id]->fread(ems[id]);;
+  energymon* em = ems[id];
+  if (em == NULL) {
+    return NULL;
+  }
+  unsigned long long data = em->fread(em);;
   return llu_to_jbyteArray(env, &data);
 }
 
+/**
+ * Cleanup the energymon for the provided identifier.
+ */
 JNIEXPORT jint JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonFinish(JNIEnv* env, jobject obj, jint id) {
-  if (id < 0 || id >= ENERGYMON_WRAPPER_MAX_COUNT || ems[id] == NULL) {
+  if (id < 0 || id >= ENERGYMON_WRAPPER_MAX_COUNT) {
     return -1;
   }
-  int result = ems[id]->ffinish(ems[id]);
-  // cleanup
-  energymon* em = ems[id];
+  // atomic management of the array
+  energymon* em = __sync_lock_test_and_set(&ems[id], NULL);
+  if (em == NULL) {
+    return -1;
+  }
+  // clear the array entry
   ems[id] = NULL;
+  int result = em->ffinish(em);
+  // cleanup
   free(em);
   return result;
 }
 
+/**
+ * Get the energymon source for the provided identifier.
+ */
 JNIEXPORT jstring JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonGetSource(JNIEnv* env, jobject obj, jint id) {
-  if (id < 0 || id >= ENERGYMON_WRAPPER_MAX_COUNT || ems[id] == NULL) {
+  if (id < 0 || id >= ENERGYMON_WRAPPER_MAX_COUNT) {
+    return NULL;
+  }
+  energymon* em = ems[id];
+  if (em == NULL) {
     return NULL;
   }
   char buf[100] = {'\0'};
-  ems[id]->fsource(buf, sizeof(buf));
+  em->fsource(buf, sizeof(buf));
   return (*env)->NewStringUTF(env, buf);
 }
 
+/**
+ * Get the energymon refresh interval for the provided identifier.
+ */
 JNIEXPORT jbyteArray JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonGetInterval(JNIEnv* env, jobject obj, jint id) {
-  if (id < 0 || id >= ENERGYMON_WRAPPER_MAX_COUNT || ems[id] == NULL) {
+  if (id < 0 || id >= ENERGYMON_WRAPPER_MAX_COUNT) {
     return NULL;
   }
-  unsigned long long data = ems[id]->finterval(ems[id]);;
+  energymon* em = ems[id];
+  if (em == NULL) {
+    return NULL;
+  }
+  unsigned long long data = em->finterval(em);;
   return llu_to_jbyteArray(env, &data);
 }

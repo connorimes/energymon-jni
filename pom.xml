@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.uchicago.cs.energymon</groupId>
   <artifactId>energymon-parent</artifactId>
@@ -6,14 +7,14 @@
   <packaging>pom</packaging>
   <name>EnergyMon Parent</name>
   <description>EnergyMon over JNI</description>
-  
+
   <modules>
     <module>native</module>
     <module>energymon</module>
     <module>test</module>
     <module>example</module>
   </modules>
-  
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -40,7 +41,7 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-  
+
   <build>
     <pluginManagement>
       <plugins>

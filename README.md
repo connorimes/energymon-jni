@@ -20,25 +20,29 @@ To build and run junit tests:
 mvn clean install -P linux
 ```
 
-To integrate with the library, add it as a Maven dependency to your project:
+To integrate with the library, add it as a Maven dependency to your project's `pom.xml`:
 
 ```
     <dependency>
       <groupId>edu.uchicago.cs.energymon</groupId>
       <artifactId>energymon</artifactId>
-      <version>${project.version}</version>
+      <version>0.0.1-SNAPSHOT</version>
     </dependency>
 ```
 
-You will also likely need to set `java.library.path` to the location of the shared object file created by the module `libenergy-default-wrapper`.
+You need to set `java.library.path` to the location of the shared object file created by the module `libenergymon-default-wrapper`.
 
-To use the Java interface, instantiate `edu.uchicago.cs.energymon.DefaultEnergyMonJNI` which implements `edu.uchicago.cs.energymon.EnergyMon`.
+To use the `edu.uchicago.cs.energymon.EnergyMon` interface, instantiate `edu.uchicago.cs.energymon.DefaultEnergyMonJNI`.
+
+Note that the default implementation is not thread safe - you must provide appropriate synchronization!
 
 ## Example
 
 There is an example implementation in the `example` directory.
-Once it is build, change to the `target/energymon-example-<version>-bin` directory, and run:
+Once it is built, change directory to `target/energymon-example-0.0.1-SNAPSHOT-bin` and run:
 
 ```sh
-java -Djava.library.path=. -cp energymon-example.jar:energymon-native-jni.jar:energymon.jar edu.uchicago.cs.energymon.EnergyMonJNIExample
+java -Djava.library.path=. \
+  -cp energymon-example.jar:energymon.jar:energymon-native-jni.jar \
+  edu.uchicago.cs.energymon.EnergyMonJNIExample
 ```

@@ -1,3 +1,13 @@
+/**
+ * Native JNI bindings for energymon-default.
+ * These functions act as wrappers since we cannot represent an energymon struct in Java.
+ * Up to ENERGYMON_WRAPPER_MAX_COUNT energymon instances may exist at any given time.
+ * This implementation is NOT thread safe.
+ *
+ * @author Connor Imes
+ * @date 2015-11-01
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <jni.h>
@@ -13,6 +23,9 @@
 
 static energymon* ems[ENERGYMON_WRAPPER_MAX_COUNT] = {NULL};
 
+/**
+ * Convert an unsigned long long to a jbyteArray.
+ */
 static inline jbyteArray llu_to_jbyteArray(JNIEnv* env, unsigned long long *val) {
   const size_t size = sizeof(unsigned long long);
   jbyteArray result = (*env)->NewByteArray(env, (jsize) size);
@@ -29,8 +42,6 @@ static inline jbyteArray llu_to_jbyteArray(JNIEnv* env, unsigned long long *val)
   }
   return result;
 }
-
-// TODO: Need a static array/list/map of active energymon implementations.
 
 /**
  * Return an int representing an energymon.

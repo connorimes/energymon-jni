@@ -1,5 +1,7 @@
 package edu.uchicago.cs.energymon;
 
+import java.nio.ByteBuffer;
+
 /**
  * JNI bindings for native energymon-default implementations.
  * 
@@ -10,15 +12,15 @@ public final class EnergyMonJNI {
 		System.loadLibrary("energymon-default-wrapper");
 	}
 
-	public static native int energymonGetDefault();
+	public static native ByteBuffer energymonGetDefault();
 
-	public static native int energymonInit(int id);
+	public static native int energymonInit(ByteBuffer ptr);
 
-	public static native byte[] energymonReadTotal(int id);
+	public static native byte[] energymonReadTotal(ByteBuffer ptr);
 
-	public static native int energymonFinish(int id);
+	public static native int energymonFinish(ByteBuffer ptr);
 
-	public static native String energymonGetSource(int id);
+	public static native String energymonGetSource(ByteBuffer ptr);
 
-	public static native byte[] energymonGetInterval(int id);
+	public static native byte[] energymonGetInterval(ByteBuffer ptr);
 }

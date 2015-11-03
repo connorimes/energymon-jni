@@ -1,8 +1,6 @@
 /**
  * Native JNI bindings for energymon-default.
- * These functions act as wrappers since we cannot represent an energymon struct in Java.
- * Up to ENERGYMON_WRAPPER_MAX_COUNT energymon instances may exist at any given time.
- * This implementation does NOT enforce safety w.r.t. the energymon protocol.
+ * This code does NOT enforce safety w.r.t. the energymon protocol.
  *
  * @author Connor Imes
  * @date 2015-11-01
@@ -15,12 +13,6 @@
 #include <energymon-default.h>
 // auto-generated header
 #include <energymon-wrapper.h>
-
-#ifndef ENERGYMON_WRAPPER_MAX_COUNT
-  #define ENERGYMON_WRAPPER_MAX_COUNT 64
-#endif
-
-static energymon* ems[ENERGYMON_WRAPPER_MAX_COUNT] = {NULL};
 
 /**
  * Convert an unsigned long long to a jbyteArray.
@@ -43,42 +35,26 @@ static inline jbyteArray llu_to_jbyteArray(JNIEnv* env, unsigned long long *val)
 }
 
 /**
- * Return an identifier representing an energymon.
+ * Return a pointer to the energymon.
  */
-JNIEXPORT jint JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonGetDefault(JNIEnv* env, jobject obj) {
+JNIEXPORT jobject JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonGetDefault(JNIEnv* env, jobject obj) {
   energymon* em = malloc(sizeof(energymon));
   if (em == NULL) {
-    return -1;
+    return NULL;
   }
   if (energymon_get_default(em)) {
     // shouldn't happen in any known implementations
     free(em);
-    return -1;
+    return NULL;
   }
-  // look for an empty slot in the array
-  unsigned int i;
-  for (i = 0; i < ENERGYMON_WRAPPER_MAX_COUNT; i++) {
-    // atomic management of the array
-    if (__sync_bool_compare_and_swap(&ems[i], NULL, em)) {
-      break;
-    }
-  }
-  if (i == ENERGYMON_WRAPPER_MAX_COUNT) {
-    // no open slots in the array
-    free(em);
-    return -1;
-  }
-  return i;
+  return (*env)->NewDirectByteBuffer(env, (void*) em, sizeof(energymon));
 }
 
 /**
- * Initialize the energymon for the provided identifier.
+ * Initialize the energymon specified by the provided pointer.
  */
-JNIEXPORT jint JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonInit(JNIEnv* env, jobject obj, jint id) {
-  if (id < 0 || id >= ENERGYMON_WRAPPER_MAX_COUNT) {
-    return -1;
-  }
-  energymon* em = ems[id];
+JNIEXPORT jint JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonInit(JNIEnv* env, jobject obj, jobject ptr) {
+  energymon* em = (energymon*) (*env)->GetDirectBufferAddress(env, ptr);
   if (em == NULL) {
     return -1;
   }
@@ -86,34 +62,25 @@ JNIEXPORT jint JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonInit
 }
 
 /**
- * Read from the energymon for the provided identifier.
+ * Read from the energymon specified by the provided pointer.
  */
-JNIEXPORT jbyteArray JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonReadTotal(JNIEnv* env, jobject obj, jint id) {
-  if (id < 0 || id >= ENERGYMON_WRAPPER_MAX_COUNT) {
-    return NULL;
-  }
-  energymon* em = ems[id];
+JNIEXPORT jbyteArray JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonReadTotal(JNIEnv* env, jobject obj, jobject ptr) {
+  energymon* em = (energymon*) (*env)->GetDirectBufferAddress(env, ptr);
   if (em == NULL) {
     return NULL;
   }
-  unsigned long long data = em->fread(em);;
+  unsigned long long data = em->fread(em);
   return llu_to_jbyteArray(env, &data);
 }
 
 /**
- * Cleanup the energymon for the provided identifier.
+ * Cleanup the energymon specified by the provided pointer.
  */
-JNIEXPORT jint JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonFinish(JNIEnv* env, jobject obj, jint id) {
-  if (id < 0 || id >= ENERGYMON_WRAPPER_MAX_COUNT) {
-    return -1;
-  }
-  // atomic management of the array
-  energymon* em = __sync_lock_test_and_set(&ems[id], NULL);
+JNIEXPORT jint JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonFinish(JNIEnv* env, jobject obj, jobject ptr) {
+  energymon* em = (energymon*) (*env)->GetDirectBufferAddress(env, ptr);
   if (em == NULL) {
     return -1;
   }
-  // clear the array entry
-  ems[id] = NULL;
   int result = em->ffinish(em);
   // cleanup
   free(em);
@@ -121,13 +88,10 @@ JNIEXPORT jint JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonFini
 }
 
 /**
- * Get the energymon source for the provided identifier.
+ * Get the energymon source specified by the provided pointer.
  */
-JNIEXPORT jstring JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonGetSource(JNIEnv* env, jobject obj, jint id) {
-  if (id < 0 || id >= ENERGYMON_WRAPPER_MAX_COUNT) {
-    return NULL;
-  }
-  energymon* em = ems[id];
+JNIEXPORT jstring JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonGetSource(JNIEnv* env, jobject obj, jobject ptr) {
+  energymon* em = (energymon*) (*env)->GetDirectBufferAddress(env, ptr);
   if (em == NULL) {
     return NULL;
   }
@@ -137,16 +101,13 @@ JNIEXPORT jstring JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonG
 }
 
 /**
- * Get the energymon refresh interval for the provided identifier.
+ * Get the energymon refresh interval specified by the provided pointer.
  */
-JNIEXPORT jbyteArray JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonGetInterval(JNIEnv* env, jobject obj, jint id) {
-  if (id < 0 || id >= ENERGYMON_WRAPPER_MAX_COUNT) {
-    return NULL;
-  }
-  energymon* em = ems[id];
+JNIEXPORT jbyteArray JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonGetInterval(JNIEnv* env, jobject obj, jobject ptr) {
+  energymon* em = (energymon*) (*env)->GetDirectBufferAddress(env, ptr);
   if (em == NULL) {
     return NULL;
   }
-  unsigned long long data = em->finterval(em);;
+  unsigned long long data = em->finterval(em);
   return llu_to_jbyteArray(env, &data);
 }

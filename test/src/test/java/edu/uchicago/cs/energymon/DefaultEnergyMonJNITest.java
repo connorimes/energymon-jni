@@ -12,7 +12,6 @@ import org.junit.Test;
  * @author Connor Imes
  */
 public class DefaultEnergyMonJNITest {
-	private static final String ENERGYMON_MAX_COUNT_PROPERTY = "energymonWrapperMaxCount";
 
 	@Test
 	public void test_normal() {
@@ -93,34 +92,5 @@ public class DefaultEnergyMonJNITest {
 		assertEquals("finish", 0, em.finish());
 		em.finish();
 		fail("Expected exception during 'getSource' after finish");
-	}
-
-	@Test(expected = IllegalStateException.class)
-	public void test_fill_native_array() {
-		final int maxEnergyMonCount = Integer.getInteger(ENERGYMON_MAX_COUNT_PROPERTY);
-		EnergyMon[] ems = new EnergyMon[maxEnergyMonCount];
-		for (int i = 0; i < ems.length; i++) {
-			try {
-				ems[i] = new DefaultEnergyMonJNI();
-			} catch (Exception e) {
-				e.printStackTrace();
-				fail("Unexpected exception: " + e.getClass() + ": " + e.getLocalizedMessage());
-			}
-		}
-		// now the buffer is full, new creations should fail
-		try {
-			new DefaultEnergyMonJNI();
-		} finally {
-			for (int i = 0; i < ems.length; i++) {
-				try {
-					ems[i].finish();
-					ems[i] = null;
-				} catch (Exception e) {
-					e.printStackTrace();
-					fail("Unexpected exception: " + e.getClass() + ": " + e.getLocalizedMessage());
-				}
-			}
-		}
-		fail("Expected exception creating too many instances");
 	}
 }

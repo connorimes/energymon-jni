@@ -5,6 +5,10 @@ import java.math.BigInteger;
 /**
  * Abstraction for EnergyMon implementations over JNI.
  * 
+ * Proper energymon protocol must be observed to prevent exceptions and memory
+ * leaks! For example, you must call {@link #finish()} before dropping the
+ * instance and allowing it to be garbage collected.
+ * 
  * @author Connor Imes
  */
 public interface EnergyMon {
@@ -13,13 +17,17 @@ public interface EnergyMon {
 	 * allocates the state field of the energymon struct.
 	 * 
 	 * @return 0 on success, failure code otherwise
+	 * @throws IllegalStateException
+	 *             if already finished
 	 */
 	int init();
 
 	/**
 	 * Get the total energy in microjoules.
 	 * 
-	 * @return energy (in uJ)
+	 * @return energy (in uJ), or null on failure
+	 * @throws IllegalStateException
+	 *             if already finished
 	 */
 	BigInteger readTotal();
 
@@ -28,21 +36,26 @@ public interface EnergyMon {
 	 * Typically frees the state field of the energymon struct.
 	 * 
 	 * @return 0 on success, failure code otherwise
+	 * @throws IllegalStateException
+	 *             if already finished
 	 */
 	int finish();
 
 	/**
 	 * Get a human-readable description of the energy monitoring source.
-	 * Implementations should ensure that the buffer is null-terminated.
 	 * 
-	 * @return pointer to the same buffer, or NULL on failure
+	 * @return description, or null on failure
+	 * @throws IllegalStateException
+	 *             if already finished
 	 */
 	String getSource();
 
 	/**
 	 * Get the refresh interval in microseconds of the underlying sensor(s).
 	 * 
-	 * @return the refresh interval
+	 * @return the refresh interval, or null on failure
+	 * @throws IllegalStateException
+	 *             if already finished
 	 */
 	BigInteger getInterval();
 }

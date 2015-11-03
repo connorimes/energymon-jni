@@ -8,19 +8,32 @@ import java.nio.ByteBuffer;
  * @author Connor Imes
  */
 public final class EnergyMonJNI {
-	static {
-		System.loadLibrary("energymon-default-wrapper");
+	private static EnergyMonJNI instance = null;
+
+	/**
+	 * Get an instance of {@link EnergyMonJNI}. On the first access, this method
+	 * loads the native library. Failure to load will result in runtime
+	 * exceptions.
+	 * 
+	 * @return {@link EnergyMonJNI}
+	 */
+	public static EnergyMonJNI get() {
+		if (instance == null) {
+			System.loadLibrary("energymon-default-wrapper");
+			instance = new EnergyMonJNI();
+		}
+		return instance;
 	}
 
-	public static native ByteBuffer energymonGetDefault();
+	public native ByteBuffer energymonGetDefault();
 
-	public static native int energymonInit(ByteBuffer ptr);
+	public native int energymonInit(ByteBuffer ptr);
 
-	public static native byte[] energymonReadTotal(ByteBuffer ptr);
+	public native byte[] energymonReadTotal(ByteBuffer ptr);
 
-	public static native int energymonFinish(ByteBuffer ptr);
+	public native int energymonFinish(ByteBuffer ptr);
 
-	public static native String energymonGetSource(ByteBuffer ptr);
+	public native String energymonGetSource(ByteBuffer ptr);
 
-	public static native byte[] energymonGetInterval(ByteBuffer ptr);
+	public native byte[] energymonGetInterval(ByteBuffer ptr);
 }

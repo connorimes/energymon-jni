@@ -28,7 +28,7 @@ public class DefaultEnergyMonJNI implements EnergyMon {
 	 *             if resources cannot be allocated
 	 */
 	public DefaultEnergyMonJNI() {
-		nativePtr = EnergyMonJNI.energymonGetDefault();
+		nativePtr = EnergyMonJNI.get().energymonGetDefault();
 		if (nativePtr == null) {
 			throw new IllegalStateException("Failed to get energymon over JNI");
 		}
@@ -45,7 +45,7 @@ public class DefaultEnergyMonJNI implements EnergyMon {
 		if (nativePtr == null) {
 			throw new IllegalStateException("Already finished");
 		}
-		return EnergyMonJNI.energymonInit(nativePtr);
+		return EnergyMonJNI.get().energymonInit(nativePtr);
 	}
 
 	/**
@@ -59,7 +59,7 @@ public class DefaultEnergyMonJNI implements EnergyMon {
 		if (nativePtr == null) {
 			throw new IllegalStateException("Already finished");
 		}
-		return toUnsignedBigInteger(EnergyMonJNI.energymonReadTotal(nativePtr));
+		return toUnsignedBigInteger(EnergyMonJNI.get().energymonReadTotal(nativePtr));
 	}
 
 	/**
@@ -75,7 +75,7 @@ public class DefaultEnergyMonJNI implements EnergyMon {
 		if (nativePtr == null) {
 			throw new IllegalStateException("Already finished");
 		}
-		int result = EnergyMonJNI.energymonFinish(nativePtr);
+		int result = EnergyMonJNI.get().energymonFinish(nativePtr);
 		nativePtr = null;
 		return result;
 	}
@@ -91,7 +91,7 @@ public class DefaultEnergyMonJNI implements EnergyMon {
 		if (nativePtr == null) {
 			throw new IllegalStateException("Already finished");
 		}
-		return EnergyMonJNI.energymonGetSource(nativePtr);
+		return EnergyMonJNI.get().energymonGetSource(nativePtr);
 	}
 
 	/**
@@ -105,7 +105,7 @@ public class DefaultEnergyMonJNI implements EnergyMon {
 		if (nativePtr == null) {
 			throw new IllegalStateException("Already finished");
 		}
-		return toUnsignedBigInteger(EnergyMonJNI.energymonGetInterval(nativePtr));
+		return toUnsignedBigInteger(EnergyMonJNI.get().energymonGetInterval(nativePtr));
 	}
 
 	private static BigInteger toUnsignedBigInteger(final byte[] data) {

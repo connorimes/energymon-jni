@@ -29,7 +29,7 @@ public class DefaultEnergyMonJNI implements EnergyMon {
 	public DefaultEnergyMonJNI() {
 		nativeId = EnergyMonJNI.energymonGetDefault();
 		if (nativeId < 0) {
-			throw new IllegalStateException("Failed in get energymon over JNI");
+			throw new IllegalStateException("Failed to get energymon over JNI");
 		}
 	}
 

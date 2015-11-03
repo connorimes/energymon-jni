@@ -8,10 +8,11 @@
  * @date 2015-11-01
  */
 
+#include <stdlib.h>
 #include <jni.h>
 // native lib headers
-#include <energymon/energymon.h>
-#include <energymon/energymon-default.h>
+#include <energymon.h>
+#include <energymon-default.h>
 // auto-generated header
 #include <energymon-wrapper.h>
 

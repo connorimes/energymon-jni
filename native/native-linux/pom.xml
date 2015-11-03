@@ -13,6 +13,11 @@
   <name>EnergyMon Native Linux</name>
   <packaging>so</packaging>
 
+  <properties>
+    <LDFLAGS></LDFLAGS>
+    <CFLAGS>-I/usr/local/include/energymon</CFLAGS>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>edu.uchicago.cs.energymon</groupId>
@@ -42,11 +47,13 @@
             <compilerStartOption>-Wall</compilerStartOption>
             <compilerStartOption>-Wno-unknown-pragmas</compilerStartOption>
             <compilerStartOption>-DENERGYMON_WRAPPER_MAX_COUNT=${energymon.wrapper.max_count}</compilerStartOption>
+            <compilerStartOption>${CFLAGS}</compilerStartOption>
           </compilerStartOptions>
           <linkerStartOptions>
             <linkerStartOption>-shared</linkerStartOption>
           </linkerStartOptions>
           <linkerEndOptions>
+            <linkerEndOption>${LDFLAGS}</linkerEndOption>
             <linkerEndOption>-lenergymon-default</linkerEndOption>
           </linkerEndOptions>
         </configuration>

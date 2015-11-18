@@ -18,15 +18,14 @@
 
   <profiles>
     <profile>
-      <id>linux</id>
+      <id>unix</id>
       <activation>
-        <property>
-          <name>platform</name>
-          <value>linux</value>
-        </property>
+        <os>
+          <family>unix</family>
+        </os>
       </activation>
       <modules>
-        <module>native-linux</module>
+        <module>native-unix</module>
       </modules>
     </profile>
   </profiles>

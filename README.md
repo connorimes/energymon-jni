@@ -12,12 +12,11 @@ The latest `energymon` C libraries can be found at
 ## Building
 
 This project uses `Maven`.
-The native platform is specified during build as a Maven profile.
-(Currently the only supported platform is `linux`.)
+Currently the only supported platforms are the `unix` family.
 To build and run junit tests:
 
 ```sh
-mvn clean install -P linux
+mvn clean install
 ```
 
 If the `energymon-default` library is compiled but not installed, you need to specify the `CFLAGS` and `LDFLAGS` properties as part of the build command.
@@ -25,7 +24,7 @@ Unless you are skipping tests (`-DskipTests`), you also need to set the `LD_LIBR
 
 ```sh
 LD_LIBRARY_PATH=/path/to/energymon/_build/lib:$LD_LIBRARY_PATH \
-  mvn clean package -P linux \
+  mvn clean package \
   -DCFLAGS=-I/path/to/energymon/inc -DLDFLAGS=/path/to/energymon/_build/lib
 ```
 

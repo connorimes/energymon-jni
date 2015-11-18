@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>libenergymon-default-wrapper</artifactId>
-  <name>EnergyMon Native Linux</name>
+  <name>EnergyMon Native Unix/Linux</name>
   <packaging>so</packaging>
 
   <properties>
@@ -33,7 +33,7 @@
         <extensions>true</extensions>
         <configuration>
           <!-- trigger javah -->
-          <javahOS>linux</javahOS>
+          <javahOS>unix</javahOS>
           <sources>
             <source>
               <directory>${basedir}/../src/main/native</directory>
@@ -61,7 +61,7 @@
             <id>javah</id>
             <phase>generate-sources</phase>
             <configuration>
-              <javahOS>linux</javahOS>
+              <javahOS>unix</javahOS>
               <javahProvider>default</javahProvider>
               <javahOutputDirectory>${project.build.directory}/custom-javah</javahOutputDirectory>
               <workingDirectory>${basedir}</workingDirectory>

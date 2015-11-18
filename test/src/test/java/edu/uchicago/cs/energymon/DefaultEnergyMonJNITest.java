@@ -55,7 +55,6 @@ public class DefaultEnergyMonJNITest {
 		assertEquals("init", 0, em.init());
 		assertEquals("finish", 0, em.finish());
 		em.init();
-		fail("Expected exception during 'init' after finish");
 	}
 
 	@Test(expected = IllegalStateException.class)
@@ -64,7 +63,6 @@ public class DefaultEnergyMonJNITest {
 		assertEquals("init", 0, em.init());
 		assertEquals("finish", 0, em.finish());
 		em.readTotal();
-		fail("Expected exception during 'readTotal' after finish");
 	}
 
 	@Test(expected = IllegalStateException.class)
@@ -73,7 +71,6 @@ public class DefaultEnergyMonJNITest {
 		assertEquals("init", 0, em.init());
 		assertEquals("finish", 0, em.finish());
 		em.getSource();
-		fail("Expected exception during 'getSource' after finish");
 	}
 
 	@Test(expected = IllegalStateException.class)
@@ -82,7 +79,6 @@ public class DefaultEnergyMonJNITest {
 		assertEquals("init", 0, em.init());
 		assertEquals("finish", 0, em.finish());
 		em.getInterval();
-		fail("Expected exception during 'getSource' after finish");
 	}
 
 	@Test(expected = IllegalStateException.class)
@@ -91,6 +87,5 @@ public class DefaultEnergyMonJNITest {
 		assertEquals("init", 0, em.init());
 		assertEquals("finish", 0, em.finish());
 		em.finish();
-		fail("Expected exception during 'getSource' after finish");
 	}
 }

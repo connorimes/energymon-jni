@@ -28,6 +28,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
+          <!-- TODO: Need to determine this based on profile -->
           <argLine>-Djava.library.path=${basedir}/../native/native-linux/target:${java.library.path}</argLine>
           <environmentVariables>
             <LD_LIBRARY_PATH>${env.LD_LIBRARY_PATH}</LD_LIBRARY_PATH>

@@ -18,7 +18,7 @@ import java.nio.ByteBuffer;
  * @author Connor Imes
  */
 public class DefaultEnergyMonJNI implements EnergyMon {
-	private volatile ByteBuffer nativePtr;
+	protected volatile ByteBuffer nativePtr;
 
 	/**
 	 * Create a {@link DefaultEnergyMonJNI}.
@@ -34,43 +34,42 @@ public class DefaultEnergyMonJNI implements EnergyMon {
 	}
 
 	public int init() {
-		if (nativePtr == null) {
-			throw new IllegalStateException("Already finished");
-		}
+		enforceNotFinished();
 		return EnergyMonJNI.get().energymonInit(nativePtr);
 	}
 
 	public BigInteger readTotal() {
-		if (nativePtr == null) {
-			throw new IllegalStateException("Already finished");
-		}
+		enforceNotFinished();
 		return toUnsignedBigInteger(EnergyMonJNI.get().energymonReadTotal(nativePtr));
 	}
 
 	public int finish() {
-		if (nativePtr == null) {
-			throw new IllegalStateException("Already finished");
-		}
+		enforceNotFinished();
 		int result = EnergyMonJNI.get().energymonFinish(nativePtr);
 		nativePtr = null;
 		return result;
 	}
 
 	public String getSource() {
-		if (nativePtr == null) {
-			throw new IllegalStateException("Already finished");
-		}
+		enforceNotFinished();
 		return EnergyMonJNI.get().energymonGetSource(nativePtr);
 	}
 
 	public BigInteger getInterval() {
-		if (nativePtr == null) {
-			throw new IllegalStateException("Already finished");
-		}
+		enforceNotFinished();
 		return toUnsignedBigInteger(EnergyMonJNI.get().energymonGetInterval(nativePtr));
 	}
 
-	private static BigInteger toUnsignedBigInteger(final byte[] data) {
+	/**
+	 * Throws an {@link IllegalStateException} if {@link #nativePtr} is null.
+	 */
+	protected void enforceNotFinished() {
+		if (nativePtr == null) {
+			throw new IllegalStateException("Already finished");
+		}
+	}
+
+	protected static BigInteger toUnsignedBigInteger(final byte[] data) {
 		return data == null ? null : new BigInteger(1, data);
 	}
 }

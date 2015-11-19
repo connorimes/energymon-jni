@@ -11,16 +11,6 @@ package edu.uchicago.cs.energymon;
  */
 public interface EnergyMon {
 	/**
-	 * Open required file(s), start necessary background tasks, etc. Typically
-	 * allocates the state field of the energymon struct.
-	 * 
-	 * @return 0 on success, failure code otherwise
-	 * @throws IllegalStateException
-	 *             if already finished
-	 */
-	int init();
-
-	/**
 	 * Get the total energy in microjoules. The resulting value should be
 	 * treated as unsigned.
 	 * 
@@ -29,16 +19,6 @@ public interface EnergyMon {
 	 *             if already finished
 	 */
 	long readTotal();
-
-	/**
-	 * Stop background tasks, close open file(s), free memory allocations, etc.
-	 * Typically frees the state field of the energymon struct.
-	 * 
-	 * @return 0 on success, failure code otherwise
-	 * @throws IllegalStateException
-	 *             if already finished
-	 */
-	int finish();
 
 	/**
 	 * Get a human-readable description of the energy monitoring source.
@@ -58,4 +38,14 @@ public interface EnergyMon {
 	 *             if already finished
 	 */
 	long getInterval();
+
+	/**
+	 * Stop background tasks, close open file(s), free memory allocations, etc.
+	 * Typically frees the state field of the energymon struct.
+	 * 
+	 * @return 0 on success, failure code otherwise
+	 * @throws IllegalStateException
+	 *             if already finished
+	 */
+	int finish();
 }

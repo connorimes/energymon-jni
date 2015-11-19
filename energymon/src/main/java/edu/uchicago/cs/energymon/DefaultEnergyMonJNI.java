@@ -11,52 +11,46 @@ import java.nio.ByteBuffer;
  * externally. Attempting to perform operations after {@link #finish()} is
  * called will result in an {@link IllegalStateException}.
  * 
- * Failure to allocate the native resources also results in an
- * {@link IllegalStateException} in the constructor.
- * 
  * @author Connor Imes
  */
 public class DefaultEnergyMonJNI implements EnergyMon {
 	protected volatile ByteBuffer nativePtr;
 
 	/**
-	 * Create a {@link DefaultEnergyMonJNI}.
+	 * Don't allow public instantiation. Should use {@link #create()} which
+	 * throws exceptions on failure.
+	 * 
+	 * @param nativePtr
+	 */
+	protected DefaultEnergyMonJNI(final ByteBuffer nativePtr) {
+		this.nativePtr = nativePtr;
+	}
+
+	/**
+	 * Create a new {@link DefaultEnergyMonJNI}.
 	 * 
 	 * @throws IllegalStateException
 	 *             if native resources cannot be allocated
 	 */
-	public DefaultEnergyMonJNI() {
-		nativePtr = EnergyMonJNI.get().energymonAlloc();
-		if (nativePtr == null) {
+	public static DefaultEnergyMonJNI create() {
+		final ByteBuffer ptr = EnergyMonJNI.get().energymonAlloc();
+		if (ptr == null) {
 			throw new IllegalStateException("Failed to allocate energymon over JNI");
 		}
-		if (EnergyMonJNI.get().energymonGetDefault(nativePtr) != 0) {
-			EnergyMonJNI.get().energymonFree(nativePtr);
+		if (EnergyMonJNI.get().energymonGetDefault(ptr) != 0) {
+			EnergyMonJNI.get().energymonFree(ptr);
 			throw new IllegalStateException("Failed to get default energymon over JNI");
 		}
-		if (EnergyMonJNI.get().energymonInit(nativePtr) != 0) {
-			EnergyMonJNI.get().energymonFree(nativePtr);
+		if (EnergyMonJNI.get().energymonInit(ptr) != 0) {
+			EnergyMonJNI.get().energymonFree(ptr);
 			throw new IllegalStateException("Failed to initialize energymon over JNI");
 		}
-	}
-
-	public int init() {
-		enforceNotFinished();
-		// we already initialized in the constructor
-		return 0;
+		return new DefaultEnergyMonJNI(ptr);
 	}
 
 	public long readTotal() {
 		enforceNotFinished();
 		return EnergyMonJNI.get().energymonReadTotal(nativePtr);
-	}
-
-	public int finish() {
-		enforceNotFinished();
-		int result = EnergyMonJNI.get().energymonFinish(nativePtr);
-		EnergyMonJNI.get().energymonFree(nativePtr);
-		nativePtr = null;
-		return result;
 	}
 
 	public String getSource() {
@@ -67,6 +61,14 @@ public class DefaultEnergyMonJNI implements EnergyMon {
 	public long getInterval() {
 		enforceNotFinished();
 		return EnergyMonJNI.get().energymonGetInterval(nativePtr);
+	}
+
+	public int finish() {
+		enforceNotFinished();
+		int result = EnergyMonJNI.get().energymonFinish(nativePtr);
+		EnergyMonJNI.get().energymonFree(nativePtr);
+		nativePtr = null;
+		return result;
 	}
 
 	/**

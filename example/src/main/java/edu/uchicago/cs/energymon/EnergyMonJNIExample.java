@@ -13,12 +13,7 @@ public class EnergyMonJNIExample {
 			iterations = Integer.parseInt(args[0]);
 		}
 		// create the EnergyMon object
-		final EnergyMon em = new DefaultEnergyMonJNI();
-		// initialize
-		if (em.init() != 0) {
-			throw new IllegalStateException("Failed to initialize");
-		}
-		// can now run other operations
+		final EnergyMon em = DefaultEnergyMonJNI.create();
 		final String source = em.getSource();
 		final long interval_us = em.getInterval();
 		final long interval_ms = interval_us / 1000;

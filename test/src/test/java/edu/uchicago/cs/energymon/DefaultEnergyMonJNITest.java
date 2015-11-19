@@ -2,8 +2,6 @@ package edu.uchicago.cs.energymon;
 
 import static org.junit.Assert.*;
 
-import java.math.BigInteger;
-
 import org.junit.Test;
 
 /**
@@ -19,7 +17,7 @@ public class DefaultEnergyMonJNITest {
 		assertEquals("init", 0, em.init());
 		assertNotNull("getSource", em.getSource());
 		assertNotEquals("getInterval", 0, em.getInterval());
-		assertTrue("readTotal", em.readTotal().compareTo(BigInteger.ZERO) >= 0);
+		assertTrue("readTotal", em.readTotal() >= 0);
 		assertEquals("finish", 0, em.finish());
 	}
 
@@ -27,14 +25,14 @@ public class DefaultEnergyMonJNITest {
 	public void test_multiple() {
 		EnergyMon em1 = new DefaultEnergyMonJNI();
 		EnergyMon em2 = new DefaultEnergyMonJNI();
-		assertEquals("init 1", 0, em1.init());
-		assertEquals("init 2", 0, em2.init());
+		// assertEquals("init 1", 0, em1.init());
+		// assertEquals("init 2", 0, em2.init());
 		assertNotNull("getSource 1", em1.getSource());
 		assertNotNull("getSource 2", em2.getSource());
 		assertNotEquals("getInterval 1", 0, em1.getInterval());
 		assertNotEquals("getInterval 2", 0, em2.getInterval());
-		assertTrue("readTotal 1", em1.readTotal().compareTo(BigInteger.ZERO) >= 0);
-		assertTrue("readTotal 2", em2.readTotal().compareTo(BigInteger.ZERO) >= 0);
+		assertTrue("readTotal 1", em1.readTotal() >= 0);
+		assertTrue("readTotal 2", em2.readTotal() >= 0);
 		assertEquals("finish 1", 0, em1.finish());
 		assertEquals("finish 2", 0, em2.finish());
 	}
@@ -52,7 +50,7 @@ public class DefaultEnergyMonJNITest {
 	@Test(expected = IllegalStateException.class)
 	public void test_init_after_finish() {
 		EnergyMon em = new DefaultEnergyMonJNI();
-		assertEquals("init", 0, em.init());
+		// assertEquals("init", 0, em.init());
 		assertEquals("finish", 0, em.finish());
 		em.init();
 	}
@@ -60,7 +58,7 @@ public class DefaultEnergyMonJNITest {
 	@Test(expected = IllegalStateException.class)
 	public void test_read_after_finish() {
 		EnergyMon em = new DefaultEnergyMonJNI();
-		assertEquals("init", 0, em.init());
+		// assertEquals("init", 0, em.init());
 		assertEquals("finish", 0, em.finish());
 		em.readTotal();
 	}
@@ -68,7 +66,7 @@ public class DefaultEnergyMonJNITest {
 	@Test(expected = IllegalStateException.class)
 	public void test_source_after_finish() {
 		EnergyMon em = new DefaultEnergyMonJNI();
-		assertEquals("init", 0, em.init());
+		// assertEquals("init", 0, em.init());
 		assertEquals("finish", 0, em.finish());
 		em.getSource();
 	}
@@ -76,7 +74,7 @@ public class DefaultEnergyMonJNITest {
 	@Test(expected = IllegalStateException.class)
 	public void test_interval_after_finish() {
 		EnergyMon em = new DefaultEnergyMonJNI();
-		assertEquals("init", 0, em.init());
+		// assertEquals("init", 0, em.init());
 		assertEquals("finish", 0, em.finish());
 		em.getInterval();
 	}
@@ -84,7 +82,7 @@ public class DefaultEnergyMonJNITest {
 	@Test(expected = IllegalStateException.class)
 	public void test_finish_after_finish() {
 		EnergyMon em = new DefaultEnergyMonJNI();
-		assertEquals("init", 0, em.init());
+		// assertEquals("init", 0, em.init());
 		assertEquals("finish", 0, em.finish());
 		em.finish();
 	}

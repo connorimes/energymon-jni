@@ -1,7 +1,5 @@
 package edu.uchicago.cs.energymon;
 
-import java.math.BigInteger;
-
 /**
  * A simple example.
  * 
@@ -22,8 +20,8 @@ public class EnergyMonJNIExample {
 		}
 		// can now run other operations
 		final String source = em.getSource();
-		final BigInteger interval_us = em.getInterval();
-		final long interval_ms = interval_us.longValue() / 1000;
+		final long interval_us = em.getInterval();
+		final long interval_ms = interval_us / 1000;
 		System.out.println("Reading from energymon source: " + source
 				+ " with interval " + interval_us + " microseconds");
 		for (int i = 0; i < iterations; i++) {

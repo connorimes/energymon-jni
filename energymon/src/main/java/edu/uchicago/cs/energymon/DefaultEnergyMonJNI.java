@@ -1,6 +1,5 @@
 package edu.uchicago.cs.energymon;
 
-import java.math.BigInteger;
 import java.nio.ByteBuffer;
 
 /**
@@ -27,25 +26,35 @@ public class DefaultEnergyMonJNI implements EnergyMon {
 	 *             if native resources cannot be allocated
 	 */
 	public DefaultEnergyMonJNI() {
-		nativePtr = EnergyMonJNI.get().energymonGetDefault();
+		nativePtr = EnergyMonJNI.get().energymonAlloc();
 		if (nativePtr == null) {
-			throw new IllegalStateException("Failed to get energymon over JNI");
+			throw new IllegalStateException("Failed to allocate energymon over JNI");
+		}
+		if (EnergyMonJNI.get().energymonGetDefault(nativePtr) != 0) {
+			EnergyMonJNI.get().energymonFree(nativePtr);
+			throw new IllegalStateException("Failed to get default energymon over JNI");
+		}
+		if (EnergyMonJNI.get().energymonInit(nativePtr) != 0) {
+			EnergyMonJNI.get().energymonFree(nativePtr);
+			throw new IllegalStateException("Failed to initialize energymon over JNI");
 		}
 	}
 
 	public int init() {
 		enforceNotFinished();
-		return EnergyMonJNI.get().energymonInit(nativePtr);
+		// we already initialized in the constructor
+		return 0;
 	}
 
-	public BigInteger readTotal() {
+	public long readTotal() {
 		enforceNotFinished();
-		return toUnsignedBigInteger(EnergyMonJNI.get().energymonReadTotal(nativePtr));
+		return EnergyMonJNI.get().energymonReadTotal(nativePtr);
 	}
 
 	public int finish() {
 		enforceNotFinished();
 		int result = EnergyMonJNI.get().energymonFinish(nativePtr);
+		EnergyMonJNI.get().energymonFree(nativePtr);
 		nativePtr = null;
 		return result;
 	}
@@ -55,9 +64,9 @@ public class DefaultEnergyMonJNI implements EnergyMon {
 		return EnergyMonJNI.get().energymonGetSource(nativePtr);
 	}
 
-	public BigInteger getInterval() {
+	public long getInterval() {
 		enforceNotFinished();
-		return toUnsignedBigInteger(EnergyMonJNI.get().energymonGetInterval(nativePtr));
+		return EnergyMonJNI.get().energymonGetInterval(nativePtr);
 	}
 
 	/**
@@ -69,7 +78,4 @@ public class DefaultEnergyMonJNI implements EnergyMon {
 		}
 	}
 
-	protected static BigInteger toUnsignedBigInteger(final byte[] data) {
-		return data == null ? null : new BigInteger(1, data);
-	}
 }

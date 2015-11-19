@@ -13,7 +13,7 @@ public final class EnergyMonJNI {
 	/**
 	 * Get an instance of {@link EnergyMonJNI}. On the first access, this method
 	 * loads the native library. Failure to load will result in runtime
-	 * exceptions.
+	 * exceptions or errors.
 	 * 
 	 * @return {@link EnergyMonJNI}
 	 */
@@ -25,15 +25,19 @@ public final class EnergyMonJNI {
 		return instance;
 	}
 
-	public native ByteBuffer energymonGetDefault();
+	public native ByteBuffer energymonAlloc();
+
+	public native void energymonFree(ByteBuffer ptr);
+
+	public native int energymonGetDefault(ByteBuffer ptr);
 
 	public native int energymonInit(ByteBuffer ptr);
 
-	public native byte[] energymonReadTotal(ByteBuffer ptr);
+	public native long energymonReadTotal(ByteBuffer ptr);
 
 	public native int energymonFinish(ByteBuffer ptr);
 
 	public native String energymonGetSource(ByteBuffer ptr);
 
-	public native byte[] energymonGetInterval(ByteBuffer ptr);
+	public native long energymonGetInterval(ByteBuffer ptr);
 }

@@ -1,7 +1,5 @@
 package edu.uchicago.cs.energymon;
 
-import java.math.BigInteger;
-
 /**
  * Abstraction for EnergyMon implementations over JNI.
  * 
@@ -23,13 +21,14 @@ public interface EnergyMon {
 	int init();
 
 	/**
-	 * Get the total energy in microjoules.
+	 * Get the total energy in microjoules. The resulting value should be
+	 * treated as unsigned.
 	 * 
-	 * @return energy (in uJ), or null on failure
+	 * @return energy (in uJ), or 0 on failure
 	 * @throws IllegalStateException
 	 *             if already finished
 	 */
-	BigInteger readTotal();
+	long readTotal();
 
 	/**
 	 * Stop background tasks, close open file(s), free memory allocations, etc.
@@ -51,11 +50,12 @@ public interface EnergyMon {
 	String getSource();
 
 	/**
-	 * Get the refresh interval in microseconds of the underlying sensor(s).
+	 * Get the refresh interval in microseconds of the underlying sensor(s). The
+	 * resulting value should be treated as unsigned.
 	 * 
-	 * @return the refresh interval, or null on failure
+	 * @return the refresh interval, or 0 on failure
 	 * @throws IllegalStateException
 	 *             if already finished
 	 */
-	BigInteger getInterval();
+	long getInterval();
 }

@@ -14,104 +14,93 @@
 // auto-generated header
 #include <energymon-wrapper.h>
 
-/**
- * Convert an unsigned long long to a jbyteArray.
- */
-static inline jbyteArray llu_to_jbyteArray(JNIEnv* env, unsigned long long *val) {
-  const size_t size = sizeof(unsigned long long);
-  jbyteArray result = (*env)->NewByteArray(env, (jsize) size);
-  if (result != NULL) {
-    jbyte *cbytes = (*env)->GetByteArrayElements(env, result, NULL);
-    if (cbytes != NULL) {
-      int i;
-      for (i = (int) (size - 1); i >= 0; i--) {
-        cbytes[i] = (jbyte) (*val & 0xFF);
-        *val >>= 8;
-      }
-      (*env)->ReleaseByteArrayElements(env, result, cbytes, 0);
-    }
+#define MACRO_GET_EM_OR_RETURN(ret) \
+  energymon* em; \
+  if (ptr == NULL) { \
+    return ret; \
+  } \
+  em = (energymon*) (*env)->GetDirectBufferAddress(env, ptr); \
+  if (em == NULL) { \
+    return ret; \
   }
-  return result;
-}
 
 /**
- * Allocate memory and get the default energymon.
+ * Allocate memory for an energymon (not yet initialized).
  * Returns a pointer to the energymon, or NULL on failure.
  */
-JNIEXPORT jobject JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonGetDefault(JNIEnv* env, jobject obj) {
+JNIEXPORT jobject JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonAlloc(JNIEnv* env,
+                                                                                     jobject obj) {
   energymon* em = malloc(sizeof(energymon));
   if (em == NULL) {
-    return NULL;
-  }
-  if (energymon_get_default(em)) {
-    // shouldn't happen in any known implementations
-    free(em);
     return NULL;
   }
   return (*env)->NewDirectByteBuffer(env, (void*) em, sizeof(energymon));
 }
 
 /**
+ * Free the energymon specified by the provided pointer.
+ */
+JNIEXPORT void JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonFree(JNIEnv* env,
+                                                                                 jobject obj,
+                                                                                 jobject ptr) {
+  if (ptr != NULL) {
+    energymon* em = (energymon*) (*env)->GetDirectBufferAddress(env, ptr);
+    free(em);
+  }
+}
+
+/**
+ * Get the default energymon.
+ * Returns 0 on success or failure code otherwise.
+ */
+JNIEXPORT jint JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonGetDefault(JNIEnv* env,
+                                                                                       jobject obj,
+                                                                                       jobject ptr) {
+  MACRO_GET_EM_OR_RETURN(-1);
+  return energymon_get_default(em);
+}
+
+/**
  * Initialize the energymon specified by the provided pointer.
  * Returns 0 on success or failure code otherwise.
  */
-JNIEXPORT jint JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonInit(JNIEnv* env, jobject obj, jobject ptr) {
-  if (ptr == NULL) {
-    return -1;
-  }
-  energymon* em = (energymon*) (*env)->GetDirectBufferAddress(env, ptr);
-  if (em == NULL) {
-    return -1;
-  }
+JNIEXPORT jint JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonInit(JNIEnv* env,
+                                                                                 jobject obj,
+                                                                                 jobject ptr) {
+  MACRO_GET_EM_OR_RETURN(-1);
   return em->finit(em);
 }
 
 /**
  * Read from the energymon specified by the provided pointer.
- * Returns the energy value on success (could be 0 if the energymon fails internally), or NULL on failure.
+ * Returns the energy value on success (could be 0 if the energymon fails internally).
  */
-JNIEXPORT jbyteArray JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonReadTotal(JNIEnv* env, jobject obj, jobject ptr) {
-  if (ptr == NULL) {
-    return NULL;
-  }
-  energymon* em = (energymon*) (*env)->GetDirectBufferAddress(env, ptr);
-  if (em == NULL) {
-    return NULL;
-  }
-  unsigned long long data = em->fread(em);
-  return llu_to_jbyteArray(env, &data);
+JNIEXPORT jlong JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonReadTotal(JNIEnv* env,
+                                                                                       jobject obj,
+                                                                                       jobject ptr) {
+  MACRO_GET_EM_OR_RETURN(0);
+  return em->fread(em);
 }
 
 /**
- * Cleanup the energymon specified by the provided pointer.
+ * Finish the energymon specified by the provided pointer.
  * Returns 0 on success or failure code otherwise.
  */
-JNIEXPORT jint JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonFinish(JNIEnv* env, jobject obj, jobject ptr) {
-  if (ptr == NULL) {
-    return -1;
-  }
-  energymon* em = (energymon*) (*env)->GetDirectBufferAddress(env, ptr);
-  if (em == NULL) {
-    return -1;
-  }
-  int result = em->ffinish(em);
-  // cleanup
-  free(em);
-  return result;
+JNIEXPORT jint JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonFinish(JNIEnv* env,
+                                                                                   jobject obj,
+                                                                                   jobject ptr) {
+  MACRO_GET_EM_OR_RETURN(-1);
+  return em->ffinish(em);
 }
 
 /**
  * Get the energymon source specified by the provided pointer.
  * Returns the string on success, or NULL on failure.
  */
-JNIEXPORT jstring JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonGetSource(JNIEnv* env, jobject obj, jobject ptr) {
-  if (ptr == NULL) {
-    return NULL;
-  }
-  energymon* em = (energymon*) (*env)->GetDirectBufferAddress(env, ptr);
-  if (em == NULL) {
-    return NULL;
-  }
+JNIEXPORT jstring JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonGetSource(JNIEnv* env,
+                                                                                         jobject obj,
+                                                                                         jobject ptr) {
+  MACRO_GET_EM_OR_RETURN(NULL);
   char buf[100] = {'\0'};
   em->fsource(buf, sizeof(buf));
   return (*env)->NewStringUTF(env, buf);
@@ -119,16 +108,11 @@ JNIEXPORT jstring JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonG
 
 /**
  * Get the energymon refresh interval specified by the provided pointer.
- * Returns the refresh interval on success, or NULL on failure.
+ * Returns the refresh interval on success.
  */
-JNIEXPORT jbyteArray JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonGetInterval(JNIEnv* env, jobject obj, jobject ptr) {
-  if (ptr == NULL) {
-    return NULL;
-  }
-  energymon* em = (energymon*) (*env)->GetDirectBufferAddress(env, ptr);
-  if (em == NULL) {
-    return NULL;
-  }
-  unsigned long long data = em->finterval(em);
-  return llu_to_jbyteArray(env, &data);
+JNIEXPORT jlong JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonGetInterval(JNIEnv* env,
+                                                                                         jobject obj,
+                                                                                         jobject ptr) {
+  MACRO_GET_EM_OR_RETURN(0);
+  return em->finterval(em);
 }

@@ -3,7 +3,13 @@ package edu.uchicago.cs.energymon;
 import java.nio.ByteBuffer;
 
 /**
- * JNI bindings for native energymon-default implementations.
+ * JNI bindings for native energymon-default implementations. The native wrapper
+ * code attempts to protect against crashes caused by incorrect usage, but
+ * cannot avoid crashes caused by use-after-free or other bad {@link ByteBuffer}
+ * values passed to it. Users are responsible for following the energymon
+ * protocol and checking return codes.
+ * 
+ * Long return values should be treated as unsigned.
  * 
  * @author Connor Imes
  */

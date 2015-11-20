@@ -7,7 +7,7 @@
   <packaging>pom</packaging>
   <name>EnergyMon Parent</name>
   <description>EnergyMon over JNI</description>
-  <url>https://github.com/energymon/energymon-java</url>
+  <url>https://github.com/energymon/energymon-jni</url>
   <inceptionYear>2015</inceptionYear>
 
   <licenses>
@@ -25,14 +25,14 @@
   </modules>
 
   <scm>
-    <url>https://github.com/energymon/energymon-java</url>
-    <connection>scm:git:git://github.com/energymon/energymon-java.git</connection>
-    <developerConnection>scm:git:git@github.com/energymon/energymon-java.git</developerConnection>
+    <url>https://github.com/energymon/energymon-jni</url>
+    <connection>scm:git:git://github.com/energymon/energymon-jni.git</connection>
+    <developerConnection>scm:git:git@github.com/energymon/energymon-jni.git</developerConnection>
   </scm>
 
   <issueManagement>
     <system>GitHub</system>
-    <url>https://github.com/energymon/energymon-java/issues</url>
+    <url>https://github.com/energymon/energymon-jni/issues</url>
   </issueManagement>
 
   <properties>

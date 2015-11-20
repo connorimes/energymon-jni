@@ -21,7 +21,6 @@
   <modules>
     <module>native</module>
     <module>energymon</module>
-    <module>test</module>
     <module>example</module>
   </modules>
 

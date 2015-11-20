@@ -63,12 +63,33 @@ public class DefaultEnergyMonJNI implements EnergyMon {
 		return EnergyMonJNI.get().energymonGetInterval(nativePtr);
 	}
 
-	public int finish() {
-		enforceNotFinished();
+	/**
+	 * This method does NOT enforce if this instance is already finished!
+	 * 
+	 * @return int
+	 */
+	protected int finishAndFree() {
 		int result = EnergyMonJNI.get().energymonFinish(nativePtr);
 		EnergyMonJNI.get().energymonFree(nativePtr);
 		nativePtr = null;
 		return result;
+	}
+
+	public int finish() {
+		enforceNotFinished();
+		return finishAndFree();
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		// last-ditch effort to cleanup if user didn't follow protocol
+		try {
+			if (nativePtr != null) {
+				finishAndFree();
+			}
+		} finally {
+			super.finalize();
+		}
 	}
 
 	/**

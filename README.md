@@ -11,7 +11,7 @@ The latest `energymon` C libraries can be found at
 
 ## Building
 
-This project uses `Maven`.
+This project uses [Maven](http://maven.apache.org/).
 Currently the only supported platforms are the `unix` family.
 To build and run junit tests:
 

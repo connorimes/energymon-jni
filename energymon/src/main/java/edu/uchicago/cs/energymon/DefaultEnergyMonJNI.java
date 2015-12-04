@@ -1,20 +1,23 @@
 package edu.uchicago.cs.energymon;
 
 import java.nio.ByteBuffer;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Gets a default energymon implementation and exposes methods for performing
  * operations on it. This implementation is a simple wrapper around the JNI
  * functions.
  * 
- * This implementation is <b>NOT</b> thread safe and should be synchronized
- * externally. Attempting to perform operations after {@link #finish()} is
- * called will result in an {@link IllegalStateException}.
+ * Attempting to perform operations after {@link #finish()} is called will
+ * result in an {@link IllegalStateException}.
  * 
  * @author Connor Imes
  */
 public class DefaultEnergyMonJNI implements EnergyMon {
 	protected volatile ByteBuffer nativePtr;
+	// r/w lock for pointer to prevent race conditions that could cause crash
+	protected final ReadWriteLock lock;
 
 	/**
 	 * Don't allow public instantiation. Should use {@link #create()} which
@@ -24,6 +27,7 @@ public class DefaultEnergyMonJNI implements EnergyMon {
 	 */
 	protected DefaultEnergyMonJNI(final ByteBuffer nativePtr) {
 		this.nativePtr = nativePtr;
+		this.lock = new ReentrantReadWriteLock(true);
 	}
 
 	/**
@@ -49,18 +53,33 @@ public class DefaultEnergyMonJNI implements EnergyMon {
 	}
 
 	public long readTotal() {
-		enforceNotFinished();
-		return EnergyMonJNI.get().energymonReadTotal(nativePtr);
+		try {
+			lock.readLock().lock();
+			enforceNotFinished();
+			return EnergyMonJNI.get().energymonReadTotal(nativePtr);
+		} finally {
+			lock.readLock().unlock();
+		}
 	}
 
 	public String getSource() {
-		enforceNotFinished();
-		return EnergyMonJNI.get().energymonGetSource(nativePtr);
+		try {
+			lock.readLock().lock();
+			enforceNotFinished();
+			return EnergyMonJNI.get().energymonGetSource(nativePtr);
+		} finally {
+			lock.readLock().unlock();
+		}
 	}
 
 	public long getInterval() {
-		enforceNotFinished();
-		return EnergyMonJNI.get().energymonGetInterval(nativePtr);
+		try {
+			lock.readLock().lock();
+			enforceNotFinished();
+			return EnergyMonJNI.get().energymonGetInterval(nativePtr);
+		} finally {
+			lock.readLock().unlock();
+		}
 	}
 
 	/**
@@ -69,15 +88,20 @@ public class DefaultEnergyMonJNI implements EnergyMon {
 	 * @return int
 	 */
 	protected int finishAndFree() {
-		int result = EnergyMonJNI.get().energymonFinish(nativePtr);
+		final int result = EnergyMonJNI.get().energymonFinish(nativePtr);
 		EnergyMonJNI.get().energymonFree(nativePtr);
 		nativePtr = null;
 		return result;
 	}
 
 	public int finish() {
-		enforceNotFinished();
-		return finishAndFree();
+		try {
+			lock.writeLock().lock();
+			enforceNotFinished();
+			return finishAndFree();
+		} finally {
+			lock.writeLock().unlock();
+		}
 	}
 
 	@Override

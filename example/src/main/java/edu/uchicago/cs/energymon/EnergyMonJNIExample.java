@@ -13,7 +13,7 @@ public class EnergyMonJNIExample {
 			iterations = Integer.parseInt(args[0]);
 		}
 		// create the EnergyMon object
-		final EnergyMon em = DefaultEnergyMonJNI.create();
+		final EnergyMon em = DefaultEnergyMon.create();
 		final String source = em.getSource();
 		final long interval_us = em.getInterval();
 		final long interval_ms = interval_us / 1000;

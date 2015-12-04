@@ -40,8 +40,7 @@ To integrate with the library, add it as a Maven dependency to your project's `p
     </dependency>
 ```
 
-To use the `edu.uchicago.cs.energymon.EnergyMon` interface, instantiate `edu.uchicago.cs.energymon.DefaultEnergyMonJNI`.
-Note that the default implementation is not thread safe - you must provide synchronization as needed!
+To use the `edu.uchicago.cs.energymon.EnergyMon` interface, instantiate `edu.uchicago.cs.energymon.DefaultEnergyMon`.
 
 When launching, you will need to set the property `java.library.path` to include the location of the native library created by the module `libenergymon-default-wrapper`.
 

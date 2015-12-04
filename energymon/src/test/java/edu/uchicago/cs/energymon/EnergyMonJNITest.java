@@ -18,72 +18,72 @@ public final class EnergyMonJNITest {
 	public void test_normal() {
 		EnergyMonJNI em = EnergyMonJNI.get();
 		assertNotNull("EnergyMonJNI", em);
-		ByteBuffer ptr = em.energymonAlloc();
+		ByteBuffer ptr = em.alloc();
 		assertNotNull("ptr", ptr);
-		assertEquals("energymonGetDefault", 0, em.energymonGetDefault(ptr));
-		assertEquals("energymonInit", 0, em.energymonInit(ptr));
-		assertNotEquals("energymonGetInterval", 0, em.energymonGetInterval(ptr));
-		assertNotNull("energymonGetSource", em.energymonGetSource(ptr));
-		em.energymonReadTotal(ptr);
-		assertEquals("energymonFinish", 0, em.energymonFinish(ptr));
-		em.energymonFree(ptr);
+		assertEquals("energymonGetDefault", 0, em.getDefault(ptr));
+		assertEquals("energymonInit", 0, em.init(ptr));
+		assertNotEquals("energymonGetInterval", 0, em.getInterval(ptr));
+		assertNotNull("energymonGetSource", em.getSource(ptr));
+		em.readTotal(ptr);
+		assertEquals("energymonFinish", 0, em.finish(ptr));
+		em.free(ptr);
 	}
 
 	@Test
 	public void test_null_ptr() {
 		EnergyMonJNI em = EnergyMonJNI.get();
 		assertNotNull("EnergyMonJNI", em);
-		assertNotEquals("energymonGetDefault", 0, em.energymonGetDefault(null));
-		assertNotEquals("energymonInit", 0, em.energymonInit(null));
-		assertEquals("energymonGetInterval", 0, em.energymonGetInterval(null));
-		assertNull("energymonGetSource", em.energymonGetSource(null));
-		assertEquals("energymonReadTotal", 0, em.energymonReadTotal(null));
-		assertNotEquals("energymonFinish", 0, em.energymonFinish(null));
-		em.energymonFree(null);
+		assertNotEquals("energymonGetDefault", 0, em.getDefault(null));
+		assertNotEquals("energymonInit", 0, em.init(null));
+		assertEquals("energymonGetInterval", 0, em.getInterval(null));
+		assertNull("energymonGetSource", em.getSource(null));
+		assertEquals("energymonReadTotal", 0, em.readTotal(null));
+		assertNotEquals("energymonFinish", 0, em.finish(null));
+		em.free(null);
 	}
 
 	@Test
 	public void test_uninitialized_ptr() {
 		EnergyMonJNI em = EnergyMonJNI.get();
 		assertNotNull("EnergyMonJNI", em);
-		ByteBuffer ptr = em.energymonAlloc();
+		ByteBuffer ptr = em.alloc();
 		assertNotNull("ptr", ptr);
-		assertEquals("energymonGetDefault", 0, em.energymonGetDefault(ptr));
-		em.energymonGetInterval(ptr);
-		em.energymonGetSource(ptr);
-		em.energymonReadTotal(ptr);
-		em.energymonFinish(ptr);
-		em.energymonFree(ptr);
+		assertEquals("energymonGetDefault", 0, em.getDefault(ptr));
+		em.getInterval(ptr);
+		em.getSource(ptr);
+		em.readTotal(ptr);
+		em.finish(ptr);
+		em.free(ptr);
 	}
 
 	@Test
 	public void test_without_get() {
 		EnergyMonJNI em = EnergyMonJNI.get();
 		assertNotNull("EnergyMonJNI", em);
-		ByteBuffer ptr = em.energymonAlloc();
+		ByteBuffer ptr = em.alloc();
 		assertNotNull("ptr", ptr);
-		assertNotEquals("energymonInit", 0, em.energymonInit(ptr));
-		assertEquals("energymonGetInterval", 0, em.energymonGetInterval(ptr));
-		assertNull("energymonGetSource", em.energymonGetSource(ptr));
-		assertEquals("energymonReadTotal", 0, em.energymonReadTotal(ptr));
-		assertNotEquals("energymonFinish", 0, em.energymonFinish(ptr));
-		em.energymonFree(ptr);
+		assertNotEquals("energymonInit", 0, em.init(ptr));
+		assertEquals("energymonGetInterval", 0, em.getInterval(ptr));
+		assertNull("energymonGetSource", em.getSource(ptr));
+		assertEquals("energymonReadTotal", 0, em.readTotal(ptr));
+		assertNotEquals("energymonFinish", 0, em.finish(ptr));
+		em.free(ptr);
 	}
 
 	@Test
 	public void test_access_after_finish() {
 		EnergyMonJNI em = EnergyMonJNI.get();
 		assertNotNull("EnergyMonJNI", em);
-		ByteBuffer ptr = em.energymonAlloc();
+		ByteBuffer ptr = em.alloc();
 		assertNotNull("ptr", ptr);
-		assertEquals("energymonGetDefault", 0, em.energymonGetDefault(ptr));
-		assertEquals("energymonInit", 0, em.energymonInit(ptr));
-		assertEquals("energymonFinish", 0, em.energymonFinish(ptr));
-		assertEquals("energymonGetInterval", 0, em.energymonGetInterval(ptr));
-		assertNull("energymonGetSource", em.energymonGetSource(ptr));
-		assertEquals("energymonReadTotal", 0, em.energymonReadTotal(ptr));
-		assertNotEquals("energymonFinish", 0, em.energymonFinish(ptr));
-		em.energymonFree(ptr);
+		assertEquals("energymonGetDefault", 0, em.getDefault(ptr));
+		assertEquals("energymonInit", 0, em.init(ptr));
+		assertEquals("energymonFinish", 0, em.finish(ptr));
+		assertEquals("energymonGetInterval", 0, em.getInterval(ptr));
+		assertNull("energymonGetSource", em.getSource(ptr));
+		assertEquals("energymonReadTotal", 0, em.readTotal(ptr));
+		assertNotEquals("energymonFinish", 0, em.finish(ptr));
+		em.free(ptr);
 	}
 
 }

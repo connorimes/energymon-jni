@@ -30,8 +30,8 @@
  * Allocate memory for an energymon (not yet initialized).
  * Returns a pointer to the energymon, or NULL on failure.
  */
-JNIEXPORT jobject JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonAlloc(JNIEnv* env,
-                                                                                     jobject obj) {
+JNIEXPORT jobject JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_alloc(JNIEnv* env,
+                                                                            jobject obj) {
   energymon* em = calloc(1, sizeof(energymon));
   if (em == NULL) {
     return NULL;
@@ -42,9 +42,9 @@ JNIEXPORT jobject JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonA
 /**
  * Free the energymon specified by the provided pointer.
  */
-JNIEXPORT void JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonFree(JNIEnv* env,
-                                                                                 jobject obj,
-                                                                                 jobject ptr) {
+JNIEXPORT void JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_free(JNIEnv* env,
+                                                                        jobject obj,
+                                                                        jobject ptr) {
   if (ptr != NULL) {
     energymon* em = (energymon*) (*env)->GetDirectBufferAddress(env, ptr);
     free(em);
@@ -55,9 +55,9 @@ JNIEXPORT void JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonFree
  * Get the default energymon.
  * Returns 0 on success or failure code otherwise.
  */
-JNIEXPORT jint JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonGetDefault(JNIEnv* env,
-                                                                                       jobject obj,
-                                                                                       jobject ptr) {
+JNIEXPORT jint JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_getDefault(JNIEnv* env,
+                                                                              jobject obj,
+                                                                              jobject ptr) {
   energymon* em;
   if (ptr == NULL) {
     return -1;
@@ -73,9 +73,9 @@ JNIEXPORT jint JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonGetD
  * Initialize the energymon specified by the provided pointer.
  * Returns 0 on success or failure code otherwise.
  */
-JNIEXPORT jint JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonInit(JNIEnv* env,
-                                                                                 jobject obj,
-                                                                                 jobject ptr) {
+JNIEXPORT jint JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_init(JNIEnv* env,
+                                                                        jobject obj,
+                                                                        jobject ptr) {
   MACRO_GET_EM_OR_RETURN(-1);
   return em->finit(em);
 }
@@ -84,9 +84,9 @@ JNIEXPORT jint JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonInit
  * Read from the energymon specified by the provided pointer.
  * Returns the energy value on success (could be 0 if the energymon fails internally).
  */
-JNIEXPORT jlong JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonReadTotal(JNIEnv* env,
-                                                                                       jobject obj,
-                                                                                       jobject ptr) {
+JNIEXPORT jlong JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_readTotal(JNIEnv* env,
+                                                                              jobject obj,
+                                                                              jobject ptr) {
   MACRO_GET_EM_OR_RETURN(0);
   return em->fread(em);
 }
@@ -95,9 +95,9 @@ JNIEXPORT jlong JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonRea
  * Finish the energymon specified by the provided pointer.
  * Returns 0 on success or failure code otherwise.
  */
-JNIEXPORT jint JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonFinish(JNIEnv* env,
-                                                                                   jobject obj,
-                                                                                   jobject ptr) {
+JNIEXPORT jint JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_finish(JNIEnv* env,
+                                                                          jobject obj,
+                                                                          jobject ptr) {
   MACRO_GET_EM_OR_RETURN(-1);
   jint ret =  em->ffinish(em);
   if (!ret) {
@@ -111,9 +111,9 @@ JNIEXPORT jint JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonFini
  * Get the energymon source specified by the provided pointer.
  * Returns the string on success, or NULL on failure.
  */
-JNIEXPORT jstring JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonGetSource(JNIEnv* env,
-                                                                                         jobject obj,
-                                                                                         jobject ptr) {
+JNIEXPORT jstring JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_getSource(JNIEnv* env,
+                                                                                jobject obj,
+                                                                                jobject ptr) {
   MACRO_GET_EM_OR_RETURN(NULL);
   char buf[100] = {'\0'};
   em->fsource(buf, sizeof(buf));
@@ -124,9 +124,9 @@ JNIEXPORT jstring JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonG
  * Get the energymon refresh interval specified by the provided pointer.
  * Returns the refresh interval on success.
  */
-JNIEXPORT jlong JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_energymonGetInterval(JNIEnv* env,
-                                                                                         jobject obj,
-                                                                                         jobject ptr) {
+JNIEXPORT jlong JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_getInterval(JNIEnv* env,
+                                                                                jobject obj,
+                                                                                jobject ptr) {
   MACRO_GET_EM_OR_RETURN(0);
   return em->finterval(em);
 }

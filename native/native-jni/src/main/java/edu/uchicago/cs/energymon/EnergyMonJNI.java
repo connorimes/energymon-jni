@@ -31,19 +31,19 @@ public final class EnergyMonJNI {
 		return instance;
 	}
 
-	public native ByteBuffer energymonAlloc();
+	public native ByteBuffer alloc();
 
-	public native void energymonFree(ByteBuffer ptr);
+	public native void free(ByteBuffer ptr);
 
-	public native int energymonGetDefault(ByteBuffer ptr);
+	public native int getDefault(ByteBuffer ptr);
 
-	public native int energymonInit(ByteBuffer ptr);
+	public native int init(ByteBuffer ptr);
 
-	public native long energymonReadTotal(ByteBuffer ptr);
+	public native long readTotal(ByteBuffer ptr);
 
-	public native int energymonFinish(ByteBuffer ptr);
+	public native int finish(ByteBuffer ptr);
 
-	public native String energymonGetSource(ByteBuffer ptr);
+	public native String getSource(ByteBuffer ptr);
 
-	public native long energymonGetInterval(ByteBuffer ptr);
+	public native long getInterval(ByteBuffer ptr);
 }

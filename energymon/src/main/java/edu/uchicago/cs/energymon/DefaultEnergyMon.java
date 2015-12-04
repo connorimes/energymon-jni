@@ -14,7 +14,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * 
  * @author Connor Imes
  */
-public class DefaultEnergyMonJNI implements EnergyMon {
+public class DefaultEnergyMon implements EnergyMon {
 	protected volatile ByteBuffer nativePtr;
 	// r/w lock for pointer to prevent race conditions that could cause crash
 	protected final ReadWriteLock lock;
@@ -25,38 +25,38 @@ public class DefaultEnergyMonJNI implements EnergyMon {
 	 * 
 	 * @param nativePtr
 	 */
-	protected DefaultEnergyMonJNI(final ByteBuffer nativePtr) {
+	protected DefaultEnergyMon(final ByteBuffer nativePtr) {
 		this.nativePtr = nativePtr;
 		this.lock = new ReentrantReadWriteLock(true);
 	}
 
 	/**
-	 * Create a new {@link DefaultEnergyMonJNI}.
+	 * Create a new {@link DefaultEnergyMon}.
 	 * 
 	 * @throws IllegalStateException
 	 *             if native resources cannot be allocated
 	 */
-	public static DefaultEnergyMonJNI create() {
-		final ByteBuffer ptr = EnergyMonJNI.get().energymonAlloc();
+	public static DefaultEnergyMon create() {
+		final ByteBuffer ptr = EnergyMonJNI.get().alloc();
 		if (ptr == null) {
 			throw new IllegalStateException("Failed to allocate energymon over JNI");
 		}
-		if (EnergyMonJNI.get().energymonGetDefault(ptr) != 0) {
-			EnergyMonJNI.get().energymonFree(ptr);
+		if (EnergyMonJNI.get().getDefault(ptr) != 0) {
+			EnergyMonJNI.get().free(ptr);
 			throw new IllegalStateException("Failed to get default energymon over JNI");
 		}
-		if (EnergyMonJNI.get().energymonInit(ptr) != 0) {
-			EnergyMonJNI.get().energymonFree(ptr);
+		if (EnergyMonJNI.get().init(ptr) != 0) {
+			EnergyMonJNI.get().free(ptr);
 			throw new IllegalStateException("Failed to initialize energymon over JNI");
 		}
-		return new DefaultEnergyMonJNI(ptr);
+		return new DefaultEnergyMon(ptr);
 	}
 
 	public long readTotal() {
 		try {
 			lock.readLock().lock();
 			enforceNotFinished();
-			return EnergyMonJNI.get().energymonReadTotal(nativePtr);
+			return EnergyMonJNI.get().readTotal(nativePtr);
 		} finally {
 			lock.readLock().unlock();
 		}
@@ -66,7 +66,7 @@ public class DefaultEnergyMonJNI implements EnergyMon {
 		try {
 			lock.readLock().lock();
 			enforceNotFinished();
-			return EnergyMonJNI.get().energymonGetSource(nativePtr);
+			return EnergyMonJNI.get().getSource(nativePtr);
 		} finally {
 			lock.readLock().unlock();
 		}
@@ -76,7 +76,7 @@ public class DefaultEnergyMonJNI implements EnergyMon {
 		try {
 			lock.readLock().lock();
 			enforceNotFinished();
-			return EnergyMonJNI.get().energymonGetInterval(nativePtr);
+			return EnergyMonJNI.get().getInterval(nativePtr);
 		} finally {
 			lock.readLock().unlock();
 		}
@@ -88,8 +88,8 @@ public class DefaultEnergyMonJNI implements EnergyMon {
 	 * @return int
 	 */
 	protected int finishAndFree() {
-		final int result = EnergyMonJNI.get().energymonFinish(nativePtr);
-		EnergyMonJNI.get().energymonFree(nativePtr);
+		final int result = EnergyMonJNI.get().finish(nativePtr);
+		EnergyMonJNI.get().free(nativePtr);
 		nativePtr = null;
 		return result;
 	}

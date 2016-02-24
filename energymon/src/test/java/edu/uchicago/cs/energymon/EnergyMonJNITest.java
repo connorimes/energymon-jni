@@ -24,6 +24,8 @@ public final class EnergyMonJNITest {
 		assertEquals("energymonInit", 0, em.init(ptr));
 		assertNotEquals("energymonGetInterval", 0, em.getInterval(ptr));
 		assertNotNull("energymonGetSource", em.getSource(ptr));
+		em.getPrecision(ptr);
+		em.isExclusive(ptr);
 		em.readTotal(ptr);
 		assertEquals("energymonFinish", 0, em.finish(ptr));
 		em.free(ptr);
@@ -37,6 +39,8 @@ public final class EnergyMonJNITest {
 		assertNotEquals("energymonInit", 0, em.init(null));
 		assertEquals("energymonGetInterval", 0, em.getInterval(null));
 		assertNull("energymonGetSource", em.getSource(null));
+		assertEquals("getPrecision", 0, em.getPrecision(null));
+		assertFalse("getPrecision", em.isExclusive(null));
 		assertEquals("energymonReadTotal", 0, em.readTotal(null));
 		assertNotEquals("energymonFinish", 0, em.finish(null));
 		em.free(null);
@@ -51,6 +55,8 @@ public final class EnergyMonJNITest {
 		assertEquals("energymonGetDefault", 0, em.getDefault(ptr));
 		em.getInterval(ptr);
 		em.getSource(ptr);
+		em.getPrecision(ptr);
+		em.isExclusive(ptr);
 		em.readTotal(ptr);
 		em.finish(ptr);
 		em.free(ptr);
@@ -65,6 +71,8 @@ public final class EnergyMonJNITest {
 		assertNotEquals("energymonInit", 0, em.init(ptr));
 		assertEquals("energymonGetInterval", 0, em.getInterval(ptr));
 		assertNull("energymonGetSource", em.getSource(ptr));
+		assertEquals("getPrecision", 0, em.getPrecision(ptr));
+		assertFalse("getPrecision", em.isExclusive(ptr));
 		assertEquals("energymonReadTotal", 0, em.readTotal(ptr));
 		assertNotEquals("energymonFinish", 0, em.finish(ptr));
 		em.free(ptr);
@@ -81,6 +89,8 @@ public final class EnergyMonJNITest {
 		assertEquals("energymonFinish", 0, em.finish(ptr));
 		assertEquals("energymonGetInterval", 0, em.getInterval(ptr));
 		assertNull("energymonGetSource", em.getSource(ptr));
+		assertEquals("getPrecision", 0, em.getPrecision(ptr));
+		assertFalse("getPrecision", em.isExclusive(ptr));
 		assertEquals("energymonReadTotal", 0, em.readTotal(ptr));
 		assertNotEquals("energymonFinish", 0, em.finish(ptr));
 		em.free(ptr);

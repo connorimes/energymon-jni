@@ -130,3 +130,25 @@ JNIEXPORT jlong JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_getInterval(
   MACRO_GET_EM_OR_RETURN(0);
   return em->finterval(em);
 }
+
+/**
+ * Get the energymon precision specified by the provided pointer.
+ * Returns the precision on success.
+ */
+JNIEXPORT jlong JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_getPrecision(JNIEnv* env,
+                                                                                 jobject obj,
+                                                                                 jobject ptr) {
+  MACRO_GET_EM_OR_RETURN(0);
+  return em->fprecision(em);
+}
+
+/**
+ * Get the energymon exclusiveness specified by the provided pointer.
+ * Returns true or false.
+ */
+JNIEXPORT jboolean JNICALL Java_edu_uchicago_cs_energymon_EnergyMonJNI_isExclusive(JNIEnv* env,
+                                                                                   jobject obj,
+                                                                                   jobject ptr) {
+  MACRO_GET_EM_OR_RETURN(JNI_FALSE);
+  return em->fexclusive() ? JNI_TRUE : JNI_FALSE;
+}

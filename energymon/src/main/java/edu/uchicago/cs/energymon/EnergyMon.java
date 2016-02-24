@@ -40,6 +40,25 @@ public interface EnergyMon {
 	long getInterval();
 
 	/**
+	 * Get the precision in microjoules of the underlying sensor(s). The
+	 * resulting value should be treated as unsigned.
+	 * 
+	 * @return the precision, or 0 on failure
+	 * @throws IllegalStateException
+	 *             if already finished
+	 */
+	long getPrecision();
+
+	/**
+	 * Get if the implementaiton requires exclusive access.
+	 * 
+	 * @return boolean
+	 * @throws IllegalStateException
+	 *             if already finished
+	 */
+	boolean isExclusive();
+
+	/**
 	 * Stop background tasks, close open file(s), free memory allocations, etc.
 	 * Typically frees the state field of the energymon struct.
 	 * 

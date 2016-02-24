@@ -82,6 +82,26 @@ public class DefaultEnergyMon implements EnergyMon {
 		}
 	}
 
+	public long getPrecision() {
+		try {
+			lock.readLock().lock();
+			enforceNotFinished();
+			return EnergyMonJNI.get().getPrecision(nativePtr);
+		} finally {
+			lock.readLock().unlock();
+		}
+	}
+
+	public boolean isExclusive() {
+		try {
+			lock.readLock().lock();
+			enforceNotFinished();
+			return EnergyMonJNI.get().isExclusive(nativePtr);
+		} finally {
+			lock.readLock().unlock();
+		}
+	}
+
 	/**
 	 * This method does NOT enforce if this instance is already finished!
 	 * 

@@ -46,4 +46,8 @@ public final class EnergyMonJNI {
 	public native String getSource(ByteBuffer ptr);
 
 	public native long getInterval(ByteBuffer ptr);
+
+	public native long getPrecision(ByteBuffer ptr);
+
+	public native boolean isExclusive(ByteBuffer ptr);
 }

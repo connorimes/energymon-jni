@@ -17,6 +17,8 @@ public class DefaultEnergyMonTest {
 		assertNotNull("getSource", em.getSource());
 		assertNotEquals("getInterval", 0, em.getInterval());
 		assertTrue("readTotal", em.readTotal() >= 0);
+		em.getPrecision();
+		em.isExclusive();
 		assertEquals("finish", 0, em.finish());
 	}
 
@@ -28,6 +30,10 @@ public class DefaultEnergyMonTest {
 		assertNotNull("getSource 2", em2.getSource());
 		assertNotEquals("getInterval 1", 0, em1.getInterval());
 		assertNotEquals("getInterval 2", 0, em2.getInterval());
+		em1.getPrecision();
+		em2.getPrecision();
+		em1.isExclusive();
+		em2.isExclusive();
 		assertTrue("readTotal 1", em1.readTotal() >= 0);
 		assertTrue("readTotal 2", em2.readTotal() >= 0);
 		assertEquals("finish 1", 0, em1.finish());
@@ -40,6 +46,8 @@ public class DefaultEnergyMonTest {
 		// behavior is undefined, but hopefully doesn't cause crashes
 		em.getSource();
 		em.getInterval();
+		em.getPrecision();
+		em.isExclusive();
 		em.readTotal();
 		em.finish();
 	}

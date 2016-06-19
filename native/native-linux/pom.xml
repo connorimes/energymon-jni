@@ -74,6 +74,9 @@
         <configuration>
           <!-- trigger javah -->
           <javahOS>linux</javahOS>
+          <javahProvider>default</javahProvider>
+          <javahOutputDirectory>${project.build.directory}/custom-javah</javahOutputDirectory>
+          <workingDirectory>${basedir}</workingDirectory>
           <sources>
             <source>
               <directory>${basedir}/../src/main/native</directory>
@@ -101,9 +104,6 @@
             <id>javah</id>
             <phase>generate-sources</phase>
             <configuration>
-              <javahProvider>default</javahProvider>
-              <javahOutputDirectory>${project.build.directory}/custom-javah</javahOutputDirectory>
-              <workingDirectory>${basedir}</workingDirectory>
               <javahOutputFileName>energymon-wrapper.h</javahOutputFileName>
               <javahClassNames>
                 <javahClassName>edu.uchicago.cs.energymon.EnergyMonJNI</javahClassName>

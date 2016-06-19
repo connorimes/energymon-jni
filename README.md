@@ -19,13 +19,13 @@ To build and run junit tests:
 mvn clean install
 ```
 
-If the `energymon-default` library is compiled but not installed, you need to specify the `CFLAGS` and `LDFLAGS` properties as part of the build command.
-Unless you are skipping tests (`-DskipTests`), you also need to set the `LD_LIBRARY_PATH` environment variable or export it to your environment.
+If `energymon-default` is not installed to a default location, you need to set the `PKG_CONFIG_PATH` environment variable or export it to your environment so that `pkg-config` can discover the library.
+Unless you are skipping tests (`-DskipTests=true`), you must do the same for `LD_LIBRARY_PATH`.
 
 ```sh
-LD_LIBRARY_PATH=/path/to/energymon/_build/lib:$LD_LIBRARY_PATH \
-  mvn clean package \
-  -DCFLAGS=-I/path/to/energymon/inc -DLDFLAGS=/path/to/energymon/_build/lib
+PKG_CONFIG_PATH=/path/to/energymon/install/lib/pkgconfig:$PKG_CONFIG_PATH \
+  LD_LIBRARY_PATH=/path/to/energymon/install/lib/:$LD_LIBRARY_PATH \
+  mvn clean package
 ```
 
 ## Usage

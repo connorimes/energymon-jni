@@ -15,7 +15,7 @@
 
   <properties>
     <LDFLAGS></LDFLAGS>
-    <CFLAGS>-I/usr/local/include/energymon</CFLAGS>
+    <CFLAGS></CFLAGS>
   </properties>
 
   <dependencies>
@@ -27,6 +27,46 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <!-- Get native dependency info from pkg-config -->
+            <id>run-pkg-config</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>${basedir}/src/main/resources/pkgconfig.sh</executable>
+              <outputFile>${project.build.directory}/pkgconfig.properties</outputFile>
+              <arguments>
+                <argument>energymon-default</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>properties-maven-plugin</artifactId>
+        <executions>
+          <!-- Read back native dependency info -->
+          <execution>
+            <id>read-pkg-config</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>read-project-properties</goal>
+            </goals>
+            <configuration>
+              <files>
+                <file>${project.build.directory}/pkgconfig.properties</file>
+              </files>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>native-maven-plugin</artifactId>
@@ -45,14 +85,15 @@
           <compilerStartOptions>
             <compilerStartOption>-fPIC</compilerStartOption>
             <compilerStartOption>-Wall</compilerStartOption>
+            <compilerStartOption>${PKG.CONFIG.CFLAGS}</compilerStartOption>
             <compilerStartOption>${CFLAGS}</compilerStartOption>
           </compilerStartOptions>
           <linkerStartOptions>
             <linkerStartOption>-shared</linkerStartOption>
           </linkerStartOptions>
           <linkerEndOptions>
+            <linkerEndOption>${PKG.CONFIG.LIBS}</linkerEndOption>
             <linkerEndOption>${LDFLAGS}</linkerEndOption>
-            <linkerEndOption>-lenergymon-default</linkerEndOption>
           </linkerEndOptions>
         </configuration>
         <executions>

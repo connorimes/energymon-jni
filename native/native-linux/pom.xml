@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>libenergymon-default-wrapper</artifactId>
-  <name>EnergyMon Native Unix/Linux</name>
+  <name>EnergyMon Native Linux</name>
   <packaging>so</packaging>
 
   <properties>
@@ -33,7 +33,7 @@
         <extensions>true</extensions>
         <configuration>
           <!-- trigger javah -->
-          <javahOS>unix</javahOS>
+          <javahOS>linux</javahOS>
           <sources>
             <source>
               <directory>${basedir}/../src/main/native</directory>
@@ -45,7 +45,6 @@
           <compilerStartOptions>
             <compilerStartOption>-fPIC</compilerStartOption>
             <compilerStartOption>-Wall</compilerStartOption>
-            <compilerStartOption>-Wno-unknown-pragmas</compilerStartOption>
             <compilerStartOption>${CFLAGS}</compilerStartOption>
           </compilerStartOptions>
           <linkerStartOptions>
@@ -61,7 +60,6 @@
             <id>javah</id>
             <phase>generate-sources</phase>
             <configuration>
-              <javahOS>unix</javahOS>
               <javahProvider>default</javahProvider>
               <javahOutputDirectory>${project.build.directory}/custom-javah</javahOutputDirectory>
               <workingDirectory>${basedir}</workingDirectory>

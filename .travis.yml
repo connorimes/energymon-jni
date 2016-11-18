@@ -1,0 +1,28 @@
+os:
+  - linux
+
+# required for building native energymon code
+addons:
+  apt:
+    sources:
+      - kubuntu-backports
+    packages:
+      - cmake
+
+language: java
+
+install:
+  # energymon dependency (use dummy implementation)
+  - git clone https://github.com/energymon/energymon.git energymon_native
+  - cd energymon_native
+  - mkdir _build
+  - cd _build
+  - cmake -DCMAKE_INSTALL_PREFIX=_install -DBUILD_SHARED_LIBS=True ..
+  - make
+  - make install
+  - cd ../..
+
+script:
+  - export LD_LIBRARY_PATH=`pwd`/energymon_native/_build/_install/lib:$LD_LIBRARY_PATH
+  - export PKG_CONFIG_PATH=`pwd`/energymon_native/_build/_install/lib/pkgconfig:$PKG_CONFIG_PATH
+  - mvn clean package

@@ -56,3 +56,10 @@ java -Djava.library.path=. \
 ```
 
 If `energymon-default` is not installed to the system, you need to set `LD_LIBRARY_PATH` as described above.
+
+## Project Source
+
+Find this and related project sources at the [energymon organization on GitHub](https://github.com/energymon).  
+This project originates at: https://github.com/energymon/energymon-jni
+
+Bug reports and pull requests for bug fixes and enhancements are welcome.

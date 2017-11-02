@@ -2,12 +2,13 @@
 
 This project provides Java bindings and thin wrappers around the `energymon-default` library.
 
+Currently, only Linux is supported.
+
 ## Dependencies
 
 The `energymon-default` library and headers should be installed to the system.
 
-The latest `energymon` C libraries can be found at
-[https://github.com/energymon/energymon](https://github.com/energymon/energymon).
+The latest `energymon` C libraries can be found at https://github.com/energymon/energymon.
 
 ## Building
 
@@ -36,7 +37,7 @@ To integrate with the library, add it as a Maven dependency to your project's `p
     <dependency>
       <groupId>edu.uchicago.cs.energymon</groupId>
       <artifactId>energymon</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>0.0.1</version>
     </dependency>
 ```
 
@@ -47,7 +48,7 @@ When launching, you will need to set the property `java.library.path` to include
 ## Example
 
 There is an example implementation in the `example` directory - see the class `edu.uchicago.cs.energymon.EnergyMonJNIExample`.
-After building, you can change directory to `example/target/energymon-example-0.0.1-SNAPSHOT-bin` and run:
+After building, you can change directory to `example/target/energymon-example-0.0.1-bin` and run:
 
 ```sh
 java -Djava.library.path=. \
